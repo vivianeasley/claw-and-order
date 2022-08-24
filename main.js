@@ -33,7 +33,7 @@ function buildCards (iconSet, startCount, isFace) {
     return {idK: letter+(value+startCount), iconK: icon, valueK: isFace ? 10 : value+2}
   });
 }
-let joker = { iconK: '🃟', valueK: 15 };
+let joker = { iconK: '🃟', valueK: 10 };
 
 let storyMode = true;
 let dialogPosition = 0;
@@ -46,13 +46,14 @@ let discard;
 let hand;
 let hasLost = false;
 let hasWon = false;
+let soundOn = true;
 
 let playerTurn = {
   tK: 0, // total
   mK: 23, // max
   rK: 2, // required
   sK: 0, // spades
-  hK: 10, // hearts
+  hK: 15, // hearts
   dK: 0, // diamonds
   cK: 0, // clubs
   lK: 0, // face cards
@@ -175,6 +176,20 @@ let abilities = {
 }
 
 // Add events //////////////////////////////////
+document.addEventListener('keydown', (e) => {
+  if (e.key == ' ') {
+    if (storyMode) {
+      storyArea.innerHTML = '';
+      storyMode = false;
+      dialogPosition = 0;
+      showGame();
+    }
+  }
+  if (e.key == 's') {
+    soundOn = false;
+  }
+});
+
 storyArea.addEventListener('click', ()=> {
   if (hasLost && !loseDialog[dialogPosition] || hasWon && !winDialog[dialogPosition]) {
     location.reload();
@@ -415,7 +430,7 @@ function checkWin () {
       return;
     }
     print(`rWe got 23!`, true, true)
-    print(`bHe says that for winning a round he's added an Ace to our deck and a Joker. Aces add 1 to our total but 11 to our stash. Jokers add 15 to our total and nothing to our stash. Also, he's added 60 to our entire stash!`);
+    print(`bHe says that for winning a round he's added an Ace to our deck and a Joker. Aces add 1 to our total but 11 to our stash. Jokers add 10 to our total and nothing to our stash. Also, he's added 60 to our entire stash!`);
     let newJoker = {...joker, ...{idK: "j"+level}}
     newJoker = gC(newJoker);
     baseDeck.push(newJoker);
@@ -424,10 +439,10 @@ function checkWin () {
     newAce = gC(newAce);
     baseDeck.push(newAce);
     level++;
-    playerTurn.sK += 60;
-    playerTurn.cK += 60;
-    playerTurn.dK += 60;
-    playerTurn.hK += 60;
+    playerTurn.sK += 20;
+    playerTurn.cK += 20;
+    playerTurn.dK += 20;
+    playerTurn.hK += 20;
     playerTurn.tK = 0;
     playerTurn.rK += 1;
     init();
@@ -451,7 +466,7 @@ function getRandomIntInclusive(min, max) {
 
 
 function sound (D, len) {
-  if(!D)return;
+  if(!D || !soundOn)return;
   let I=+len;
   window.AudioContext = window.AudioContext||window.webkitAudioContext;
   let ctx = new AudioContext;
