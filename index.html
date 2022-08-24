@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lawful Purrr-suation</title>
+  </head>
+  <body>
+
+    <div class="main">
+      <div class="table story"></div>
+      <img class="cat story" src="/cat-final.png" alt="">
+      <div class="cops">
+        <div class="cop1 story"></div>
+        <div class="cop2-wrapper">
+          <div class="cop2 story"></div>
+        </div>
+      </div>
+      <div class="story-area box story"><div>Bennet: Hello, I'm detective Bennet. I'll be cat translating through this interrogation (Tap on the text to proceed).</div></div>
+      <div class="game-area-wrapper game hide">
+        <div class="game-area">
+          <div class="zones box deck zone-area"></div>
+          <div class="zones box play zone-area"></div>
+        </div>
+        <div class="game-area">
+          <div class="zones box discard zone-area"></div>
+        </div>
+        <div class="game-area">
+          <div class="zones box stats">
+            <div title="Total of all card values you've drawn. Go over max and you lose 20 hearts! 0 or less hearts and you lose!"><h2>Total: <span></span></h2></div>
+            <div title="Don't go over this with your total!">Max: <span></span></div>
+            <div title="Draw at least this many card before are able to pass the turn.">Required: <span></span></div>
+            <h3 class="center">-Stashes-</h3>
+            <div>♠: <span></span></div>
+            <div>♥: <span></span></div>
+            <div>♦: <span></span></div>
+            <div>♣: <span></span></div>
+            <div title="Win a round with 20 or more face cards in your deck and you win the game.">Faces: <span></span></div>
+          </div>
+          <div class="zones box text-area">Bennet: He says the rules are as follows. 
+            <ul style="color:red">
+              <li>The goal of the game is to get 20 face cards into your deck and then win a round.</li>
+              <li>To start tap on the deck in the top left to draw a card.</li>
+              <li>Draw at least 2 cards without exeeding the max of 23, similiar to Blackjack.</li>
+              <li>If our total is exactly 23 after drawing we win the round!</li>
+              <li>If we go over the max or have 0 hearts in our stash we immeditaly lose.</li>
+              <li>You can pass at any time after you have drawn the required number of cards but if you are under your max that will be subtracted from your stash of hearts</li>
+            </ul>
+          </div>
+          <div class="zones box controls">
+            <div>Free: <button data-f="pass">Pass turn</button></div>
+            <div>20x♣<button data-f="add">Add 2</button></div>
+            <div>20x♠<button data-f="subtract">Subtract 3</button></div>
+            <div>20x♦<button data-f="redraw">Redraw</button></div>
+            <div>60x♠♣♦<button data-f="remove">Remove Card</button></div>
+            <div>60x♠♣♦♥<button data-f="addFaceCard">Add Face Card</button></div>
+          </div>
+        </div>     
+      </div>
+    </div>
+
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
