@@ -77,9 +77,9 @@ let isClickable = (val) => {
   c1: playerTurn.cK > 19,
   c2: playerTurn.sK > 19,
   c3: playerTurn.dK > 19,
-  c4: playerTurn.sK > 59 &&
-  playerTurn.cK > 59 &&
-  playerTurn.dK > 59,
+  c4: playerTurn.sK > 9 &&
+  playerTurn.cK > 9 &&
+  playerTurn.dK > 9,
   c5: playerTurn.sK > 59 &&
   playerTurn.cK > 59 &&
   playerTurn.dK > 59 &&
@@ -295,6 +295,7 @@ pDiscardN.addEventListener('click', (e)=>{
 
 init()
 function init () {
+  sound('ipuwx-t-----upli-lp-n-----binp-rm-----nlida-ki', 'sine', 0.3);
   if (!baseDeck) baseDeck = genPlayerDeck();
   playerTurn.tK = 0;
   deck = shuffle([...baseDeck]);
@@ -425,7 +426,7 @@ function finish (isWin) {
 function checkWin () {
   if (playerTurn.tK === playerTurn.mK) {
     const numFaces = countFaces();
-    if (numFaces > 19) {
+    if (numFaces > 9) {
       finish(true)
       return;
     }
@@ -444,7 +445,6 @@ function checkWin () {
     playerTurn.dK += 20;
     playerTurn.hK += 20;
     playerTurn.tK = 0;
-    playerTurn.rK += 1;
     init();
   }
 }
@@ -465,24 +465,35 @@ function getRandomIntInclusive(min, max) {
 }
 
 
-function sound (D, len) {
-  if(!D || !soundOn)return;
-  let I=+len;
-  window.AudioContext = window.AudioContext||window.webkitAudioContext;
-  let ctx = new AudioContext;
-  if (!ctx) return;
-  let G=ctx.createGain();
-  for(let i=0;i<D.length;i++) {
-    let oc = ctx.createOscillator();
-    if(D[i=+i]&&D[i]!="0")
-    oc.connect(G),
-    G.connect(ctx.destination),
-    oc.start(i*I+.3),
-    oc.frequency.setValueAtTime(440*1.06**(-105+D.charCodeAt(i)),i*I+.3),
-    oc.type='sine',            // or triangle or square or sawtooth
-    G.gain.setValueAtTime(.5,i*I+.3),
-    G.gain.setTargetAtTime(.001,i*I+.3+.1,.05),
-    oc.stop(i*I+.3+I-.01);
+//type: sine triangle square or sawtooth 
+function sound (stringNotes, type, musicLength) { 
+  if(!soundOn)return;
+  let noteLength;
+  let noteLengths = {
+    '5': 0.4, // full
+    '4': 0.3, // 3 quarters
+    '3': 0.2,
+    '2': 0.1,
+    '1': 0.05,
   }
-
+  let skipList = Object.keys(noteLengths);
+  skipList.push('-')
+  window.AudioContext = window.AudioContext||window.webkitAudioContext;
+  let ctx = new AudioContext();
+  if (!ctx) return;
+  let gainNode=ctx.createGain();
+  for(let i=0;i<stringNotes.length;i++) {
+    noteLength = !isNaN(stringNotes[i+1]) ? noteLengths[stringNotes[i+1]] : musicLength ? musicLength : 0.1;
+    let oscNode = ctx.createOscillator();
+    if(stringNotes[i=+i]&&!skipList.includes(stringNotes[i])) {
+      oscNode.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      oscNode.start(i*noteLength+.3);
+      oscNode.frequency.setValueAtTime(440*1.06**(-105+stringNotes.charCodeAt(i)),i*noteLength+.3);
+      oscNode.type= type ? type : 'sine';           
+      gainNode.gain.setValueAtTime(.5,i*noteLength+.3);
+      gainNode.gain.setTargetAtTime(.001,i*noteLength+.3+.1,.05);
+      oscNode.stop(i*noteLength+.3+noteLength-.01);
+    }
+  }
 }
