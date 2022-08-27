@@ -1,6 +1,7 @@
 import './style.css'
-
-let cardIcons = ['🂢','🂲','🃂','🃒','🂣','🂳','🃃','🃓','🂤','🂴','🃄','🃔','🂥','🂵','🃅','🃕','🂦','🂶','🃆','🃖','🂧','🂷','🃇','🃗','🂨','🂸','🃈','🃘','🂩','🂹','🃉','🃙','🂪','🂺','🃊','🃚'];
+let cardValues = [2, 3, 5, 10];
+let faceNames = ['Jack', 'Knight', 'Queen', 'King'];
+let cardIcons = ['🂢','🂲','🃂','🃒','🂣','🂳','🃃','🃓','🂥','🂵','🃅','🃕','🂪','🂺','🃊','🃚'];
 let faceIcons = ['🂫', '🂻', '🃋', '🃛', '🂬', '🂼', '🃌', '🃜', '🂭', '🂽', '🃍', '🃝', '🂮', '🂾', '🃎', '🃞'];
 let aceIcons = ['🂡', '🂱', '🃁', '🃑'];
 
@@ -15,30 +16,21 @@ let dialog = {
 let winDialog = ['rTake that!', "cMeow", 'bHe says well played but he still has nothing to say to us, just thanks for helping him pass the time', `rNo thank you ${mf}. That's probably been long enough wouldn't you say detective Bennet?`, 'bYes, we probably have everything we need by now', 'cMeow?', `bThat's correct ${mf}, this was all a distraction to buy us enough time to raid the headquarters, of the most natorious feline crime syndicate in the city.`, 'cMeow, meow, meow', `bYou're wrong ${mf}, we will indeed find evidence we need to make a case against you because, you see, ${mf} there's a mole in your organization and we know exactly where to look.`, 'cMeow, meow, meow', `bHa no, this isn't a bluff, you're going away for a very, very, very long time ${mf}.`];
 let loseDialog = ['cMeow, meow, meow', `bHe says it looks like our luck has run out, his little cat whiskers are sealed until his lawyer arrives. Better luck next time detectives (click to play again)`];
 
-let letters = ['t', 'm', 'r', 's', 'h', 'd', 'c', 'l'];
-let suits = letters.slice(3, 7);
-let numCards = buildCards(cardIcons, 0);
-let faces = buildCards(faceIcons, 9, true);
+let symbols = {'s':'♠', 'h':'♥', 'd':'♦', 'c':'♣'}
+let letters = ['s', 'h', 'd', 'c', 'l', 't', 'm'];
+let suits = Object.keys(symbols);
+let numCards = buildCards(cardIcons);
+let faces = buildCards(faceIcons, true);
 let aces = aceIcons.map((icon, i)=>{
-  return {iconK: icon, valueK: 1, idK: suits[i]}
+  return {iconK: icon, valueK: 1, idK: suits[i], nameK: 'Ace'}
 });
-
-function buildCards (iconSet, startCount, isFace) {
-  let count = 0;
-  return iconSet.map((icon, i)=>{
-    let letter = suits[count]
-    count++;
-    if (count > 3) count = 0;
-    let value = Math.floor(i/4);
-    return {idK: letter+(value+startCount), iconK: icon, valueK: isFace ? 10 : value+2}
-  });
-}
-let joker = { iconK: '🃟', valueK: 10 };
+let joker = { iconK: '🃟', valueK: 10, nameK: 'Joker' };
 
 let storyMode = true;
 let dialogPosition = 0;
 let cardRemoval = false;
 let level = 1;
+let min = 2;
 
 let baseDeck;
 let deck;
@@ -49,18 +41,27 @@ let hasWon = false;
 let soundOn = true;
 
 let playerTurn = {
-  tK: 0, // total
-  mK: 23, // max
-  rK: 2, // required
   sK: 0, // spades
   hK: 15, // hearts
   dK: 0, // diamonds
   cK: 0, // clubs
   lK: 0, // face cards
+  tK: 0, // total
+  mK: 23, // max
+}
+
+function buildCards (iconSet, isFace) {
+  return iconSet.map((icon, i)=>{
+    let count = Math.floor(i/4);
+    let letter = suits[i%4];
+    let num = cardValues[count];
+    return {idK: letter+(isFace ? i+10 : num), iconK: icon, valueK: isFace ? 10 : cardValues[count], nameK: isFace ? faceNames[count] : undefined }
+  });
 }
 
 let ga = (c) => document.querySelectorAll(c);
 let gn = (c) => document.querySelector(c);
+let ce = (c) => document.createElement(c);
 
 let areas = ga('.zone-area');
 let controlsNode = gn('.controls');
@@ -71,25 +72,26 @@ let pDeckN = areas[0];
 let pHandN = areas[1];
 let pDiscardN = areas[2];
 let statsNode = ga('span');
+let selectNode = gn('.select');
+let gameArea = gn('.top');
 
 let isClickable = (val) => {
-  return {c0: !hasLost,
-  c1: playerTurn.cK > 19,
-  c2: playerTurn.sK > 19,
-  c3: playerTurn.dK > 19,
-  c4: playerTurn.sK > 9 &&
+  return {c0: playerTurn.cK > 19,
+  c1: playerTurn.sK > 19,
+  c2: playerTurn.dK > 19,
+  c3: playerTurn.sK > 9 &&
   playerTurn.cK > 9 &&
   playerTurn.dK > 9,
-  c5: playerTurn.sK > 59 &&
+  c4: playerTurn.sK > 59 &&
   playerTurn.cK > 59 &&
   playerTurn.dK > 59 &&
   playerTurn.hK > 59}[val]
 }
 
-
-const aC = (p, c)=>p.appendChild(c.nodeK);
-const gC = (c)=>{
-  c.nodeK = document.createElement("div");
+let cl = (n) => n.innerHTML = '';
+let aC = (p, c)=>p.appendChild(c.nodeK);
+let gC = (c)=>{
+  c.nodeK = ce("div");
   c.nodeK.classList.add('c');
   c.nodeK.textContent = c.iconK;
   c.nodeK.dataset.id = c.idK;
@@ -106,11 +108,20 @@ let abilities = {
           finish(false); 
           return
       };
-      if (hand.length < playerObj.rK) {
+      if (hand.length < min) {
         print('bHe says you have to draw more cards to pass.', true);
         return;
       }
+      if(hand.length > 5){
+        let extra = hand.length - 5;
+        playerTurn.cK +=extra*10;
+        playerTurn.dK +=extra*10;
+        playerTurn.hK +=extra*10;
+        playerTurn.sK +=extra*10;
+        print('bWe added extra to our stash for drawing over 5 cards!', true);
+      }
       playerTurn.hK -= diff;
+      playerTurn.tK = 0;
       print(`bWe lost ${diff} hearts`);
       if (diff > 5 && diff < 10) print('cMeow');
       if (diff > 10) print('cPurrr');
@@ -118,7 +129,7 @@ let abilities = {
       move(hand, discard, hand.length);
     },
   add: (playerObj) => {
-      if (isClickable('c1')) {
+      if (isClickable('c0')) {
         playerTurn.cK -= 20;
         playerObj.tK += 2;
         print('wWe use the add 2 ability');
@@ -126,7 +137,7 @@ let abilities = {
     },
 
   subtract: (playerObj) => {
-      if (isClickable('c2')) {
+      if (isClickable('c1')) {
         playerTurn.sK -= 20;
         playerObj.tK -= 3;
         print('wWe use the subtract 3 ability');
@@ -136,7 +147,7 @@ let abilities = {
       }
   },
   redraw: (playerObj) => {
-      if (isClickable('c3')) {
+      if (isClickable('c2')) {
         playerTurn.dK -= 20;
         move(hand.reverse(), discard, 1);
         drawFromDeck();
@@ -151,26 +162,26 @@ let abilities = {
         return;
       }
 
-      if (isClickable('c4')) {
-        playerTurn.sK -= 60;
-        playerTurn.cK -= 60;
-        playerTurn.dK -= 60;
+      if (isClickable('c3')) {
+        playerTurn.sK -= 10;
+        playerTurn.cK -= 10;
+        playerTurn.dK -= 10;
         cardRemoval = true;
       }
   },
   addFaceCard:(playerObj) => {
-      if (isClickable('c5')) {
+      if (isClickable('c4')) {
         playerTurn.sK -= 60;
         playerTurn.cK -= 60;
         playerTurn.dK -= 60;
         playerTurn.hK -= 60;
         let newface = faces[getRandomIntInclusive(0, faces.length)];
         newface = gC(newface);
-        discard.push({...newface});
-        baseDeck.push({...newface});
-        playerTurn.mK += 1;
-        console.log(playerTurn)
-        print(`bFor each face card added to your deck he'll raise the max by 1. If you win a round with 10 or more face cards you win the game and he'll tell us everything we want to know.`, true)
+        let newId = newface.idK + baseDeck.length;
+        discard.push({...newface, ...{idK: newId}});
+        baseDeck.push({...newface, ...{idK: newId}});
+        playerTurn.mK += 7;
+        print(`bFor each face card added to your deck he'll raise the max by 7. If you win a round with 20 or more Ace, Joker, or face cards you win the game and he'll tell us everything we want to know.`, true)
       }
   }
 }
@@ -179,7 +190,7 @@ let abilities = {
 document.addEventListener('keydown', (e) => {
   if (e.key == ' ') {
     if (storyMode) {
-      storyArea.innerHTML = '';
+      cl(storyArea);
       storyMode = false;
       dialogPosition = 0;
       showGame();
@@ -207,7 +218,7 @@ storyArea.addEventListener('click', ()=> {
     print(speech)
     dialogPosition++;
   } else {
-    storyArea.innerHTML = '';
+    cl(storyArea)
     storyMode = false;
     dialogPosition = 0;
     showGame();
@@ -232,7 +243,7 @@ function showGame () {
   })
 }
 
-controlsNode.addEventListener('click', (e)=> {
+gameArea.addEventListener('click', (e)=> {
   if (!e.target.dataset.f) return;
   abilities[e.target.dataset.f](playerTurn);
   checkWin();
@@ -241,7 +252,7 @@ controlsNode.addEventListener('click', (e)=> {
 
 // hit me
 pDeckN.addEventListener('click', ()=>{
-  if (playerTurn.tK > 23) {
+  if (playerTurn.tK > playerTurn.mK) {
     print('bMr. Fluffly says that you went over 23. Either buy an ability or pass to lose the game (followed by meniacal cat laughter.)', true);
     return; 
   }
@@ -261,10 +272,9 @@ function drawFromDeck () {
     move(deck, hand, 1);
   
     // add to abilities
-    let letter = hand[hand.length - 1].idK.charAt(0);
-    let num = parseInt(hand[hand.length - 1].idK.charAt(1), 10);
-    if (num > 7) print('r'+rDialog[getRandomIntInclusive(0, rDialog.length)])
-    playerTurn[letter+'K']+=(num+2);
+    let currentCard = hand[hand.length - 1];
+    if (currentCard.valueK > 5) print('r'+rDialog[getRandomIntInclusive(0, rDialog.length - 1)])
+    playerTurn[currentCard.idK[0]+'K']+=(currentCard.valueK+2);
   
     // recalculate total
     let cTotal = 0;
@@ -309,6 +319,7 @@ function gameLoop () {
 }
 
 function render () {
+  updateDeckSelect()
   // Start flip
   let allCardsInPlay = ga('.c');
   let flip = [...allCardsInPlay].map(function(element) {
@@ -319,7 +330,7 @@ function render () {
     };
   });
   // render
-  areas.forEach(n=>n.innerHTML='')
+  areas.forEach(n=>cl(n))
   deck.forEach(c=>aC(pDeckN, c))
   hand.forEach(c=>aC(pHandN, c))
   discard.forEach(c=>aC(pDiscardN, c))
@@ -369,6 +380,19 @@ function shuffle (arr) {
       .map(({ value }) => value)
 }
 
+function updateDeckSelect () {
+  cl(selectNode);
+  let option = ce("option");
+  option.textContent = 'Base Deck';
+  aC(selectNode, {nodeK: option})
+  baseDeck.sort((a, b) => a.valueK - b.valueK).forEach((card)=>{
+    option = ce("option");
+    let type = symbols[card.idK[0]];
+    option.textContent = `${type ? type : card.idK[0]}-${card.nameK ? card.nameK : card.valueK}`;
+    aC(selectNode, {nodeK: option})
+  })
+}
+
 function move (a, t, num=1) {
   // a = array
   // t = targetArray
@@ -382,7 +406,7 @@ function move (a, t, num=1) {
 let shuffleString = str => str.split('').sort(function(){return 0.5-Math.random()}).join('');
 
 function print (text, important, big) {
-  let node = document.createElement(big ? "h2" : "div");
+  let node = ce(big ? "h2" : "div");
   let pre = {
     w: 'Detectives: ',
     c: `${mf}: `,
@@ -426,7 +450,7 @@ function finish (isWin) {
 function checkWin () {
   if (playerTurn.tK === playerTurn.mK) {
     const numFaces = countFaces();
-    if (numFaces > 9) {
+    if (numFaces > 19) {
       finish(true)
       return;
     }
@@ -450,10 +474,10 @@ function checkWin () {
 }
 
 function countFaces () {
+  let faceCards = [...faceNames, 'Joker', 'Ace']
   let numFaces = 0;
   const faces = baseDeck.forEach((c)=> {
-    let numId = parseInt(c.idK.substring(1), 10);
-    if (numId > 8) numFaces++;
+    if (faceCards.includes(c.nameK)) numFaces++;
   })
   return numFaces
 }
@@ -464,7 +488,7 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
-
+// Slightly aumented version of XEMs nifty little music player
 //type: sine triangle square or sawtooth 
 function sound (stringNotes, type, musicLength) { 
   if(!soundOn)return;

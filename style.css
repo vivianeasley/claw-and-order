@@ -396,8 +396,13 @@
   padding: 0 0 8px 0;
 }
 
-@media screen and (max-height: 410px) {
+.top {
+  flex: 0 1 auto;
+  max-height: 167px;
+}
+
+/* @media screen and (max-height: 410px) {
   .game-area.bottom {
     margin-top: -35px;
   }
-}
+} */
