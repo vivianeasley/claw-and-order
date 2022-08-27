@@ -13,7 +13,7 @@ let dialog = {
 };
 
 let winDialog = ['rTake that!', "cMeow", 'bHe says well played but he still has nothing to say to us, just thanks for helping him pass the time', `rNo thank you ${mf}. That's probably been long enough wouldn't you say detective Bennet?`, 'bYes, we probably have everything we need by now', 'cMeow?', `bThat's correct ${mf}, this was all a distraction to buy us enough time to raid the headquarters, of the most natorious feline crime syndicate in the city.`, 'cMeow, meow, meow', `bYou're wrong ${mf}, we will indeed find evidence we need to make a case against you because, you see, ${mf} there's a mole in your organization and we know exactly where to look.`, 'cMeow, meow, meow', `bHa no, this isn't a bluff, you're going away for a very, very, very long time ${mf}.`];
-let loseDialog = ['cMeow, meow, meow', `bHe says we've not only lost but we've waisted his time long enough, his little cat whiskers are sealed until his lawyer arrives. (click to play again)`];
+let loseDialog = ['cMeow, meow, meow', `bHe says it looks like our luck has run out, his little cat whiskers are sealed until his lawyer arrives. Better luck next time detectives (click to play again)`];
 
 let letters = ['t', 'm', 'r', 's', 'h', 'd', 'c', 'l'];
 let suits = letters.slice(3, 7);
