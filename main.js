@@ -126,6 +126,7 @@ let abilities = {
       playerTurn.hK -= diff;
       playerTurn.tK = 0;
       xp+=0.2;
+      progressStory();
       print(`bWe lost ${diff} hearts`);
       if (diff > 5 && diff < 10) print('cMeow');
       if (diff > 10) print('cPurrr');
@@ -517,16 +518,20 @@ function checkWin () {
     playerTurn.tK = 0;
     xp++;
     // Trigger mid way story modes
-    if (xp%mode === 0) {
-      if (level < 3) level++;
-      min++;
-      print(`bLooks like the minimum number of cards we have to draw to pass is now ${min}`, true, true)
-      storyMode = true;
-      showStory();
-      print(dialog['d'+level][dialogPosition])
-      dialogPosition++;
-    }
+    progressStory();
     init();
+  }
+}
+
+function progressStory () {
+  if (xp%mode === 0) {
+    if (level < 3) level++;
+    min++;
+    print(`bLooks like the minimum number of cards we have to draw to pass is now ${min}`, true, true)
+    storyMode = true;
+    showStory();
+    print(dialog['d'+level][dialogPosition])
+    dialogPosition++;
   }
 }
 
