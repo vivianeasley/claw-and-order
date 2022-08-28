@@ -55,7 +55,7 @@ let playerTurn = {
   cK: 0, // clubs
   lK: 0, // face cards
   tK: 0, // total
-  mK: 21, // max
+  mK: 23, // max
 }
 
 let ga = (c) => document.querySelectorAll(c);
