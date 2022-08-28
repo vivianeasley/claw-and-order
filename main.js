@@ -1,4 +1,7 @@
 import './style.css'
+
+// Declare vars
+////////////////
 let cardValues = [2, 3, 5, 10];
 let faceNames = ['Jack', 'Knight', 'Queen', 'King'];
 let cardIcons = ['🂢','🂲','🃂','🃒','🂣','🂳','🃃','🃓','🂥','🂵','🃅','🃕','🂪','🂺','🃊','🃚'];
@@ -10,7 +13,10 @@ let mf = 'Mr. Fluffy Pants';
 let rDialog = [`You &%$#, you're just toying with us aren't you!`, `Is this a game to you!!! There's a backyard full of dead birds and it's got ${mf} written all over it!`, `Well that orphanage certainly didn't burn itself down.`,`Don't play coy with me. I invented coy! I've got a goddamn patent on being coy!`,`You think you're tough! I eat pancakes shaped like your face for breakfast!`, `You think you're tough! I'll pett you 1 too many times!`, `You want to dance tough guy? I'll feed you 5 minutes after your normal dinner time!`, `I don't play by your rules`, `I get results`, `I'm getting too old for this &*^%`, `I'm a dog person`, `Would you like some fishy-lump treats? Well, tough! We're all out!`];
 
 let dialog = {
-  d1: [`rI'm detective Rivera.`,`b${mf} do you understand why you are being questioned today?`,`cMeow`,`bYou are currently being held on the suspicion of number of crimes including, but not limited to, murder 1.`,`cMeow, hiss`,`rWhat'd he say! Was that about me?!? Look, you little hairball you're on thin ice. We've got so much dirt on you we're going to put you away for life! We have witnesses…`,`bI'm sorry about my partner. They have a bit of a temper.`,`cMeow`, `bYes ${mf}`, `cMeow`, `bYes, uh huh`, `cMeow`, `bYes, I understand that but... there has to be some kind of understanding we can reach. We are prepared to offer you a good deal in exchange for information on the crime sydicate we know you are part of.`, `cMeow`, `bHe says he's thinking`, `cMeow, meow meow`, `bHe says he'd like to play a game. His game is blackjack but that might be boring for detectives as smart as us so he's spiced it up a bit.`,`bHe says if we win he game he'll answer any questions we have but if we lose he'll have nothing to say until his lawyer arrives.`,`rI'm not here to play games!!!!`,`bAgain I apologize for my partner... how can we say no to such an offer. Lets play your little game.`],
+  d0: [`rI'm detective Rivera.`,`b${mf} do you understand why you are being questioned today?`,`cMeow`,`bYou are currently being held on the suspicion of number of crimes including, but not limited to, murder 1.`,`cMeow, hiss`,`rWhat'd he say! Was that about me?!? Look, you little hairball you're on thin ice. We've got so much dirt on you we're going to put you away for life! We have witnesses…`,`bI'm sorry about my partner. They have a bit of a temper.`,`cMeow`, `bYes ${mf}`, `cMeow`, `bYes, uh huh`, `cMeow`, `bYes, I understand that but... there has to be some kind of understanding we can reach. We are prepared to offer you a good deal in exchange for information on the crime sydicate we know you are part of.`, `cMeow`, `bHe says he's thinking`, `cMeow, meow meow`, `bHe says he'd like to play a game. His game is blackjack but that might be boring for detectives as smart as us so he's spiced it up a bit.`,`bHe says if we win he game he'll answer any questions we have but if we lose he'll have nothing to say until his lawyer arrives.`,`rI'm not here to play games!!!!`,`bAgain I apologize for my partner... how can we say no to such an offer. Lets play your little game.`],
+  d1: [`cMeow, meow.`, `bHe says we're doing well enough that he'd like to raise the stakes. We are now required to 3 cards each round. In return, if we win hell lead us too a vast treasure he buried.`, `rTreasure you say...`, `bWhoa now Rivera. Lets not have annother It's a Mad Mad Mad Mad World debacle. We accept your terms ${mf}`],
+  d2: [`rYou seem to be sweating ${mf}, how about you add another required card draw for... lets say the location of your secret lair.`, `cMeow.`, `bHe says cats don't sweat and he be more than happy to give us more information for making the game harder.`],
+  d3: [`rAgain! more required cards to draw! We're taking you down ${mf} with your own game!`, `cMeow, hiss, hiss, rawr, hiss`, `rLets dance.`]
 };
 
 let winDialog = ['rTake that!', "cMeow", 'bHe says well played but he still has nothing to say to us, just thanks for helping him pass the time', `rNo thank you ${mf}. That's probably been long enough wouldn't you say detective Bennet?`, 'bYes, we probably have everything we need by now', 'cMeow?', `bThat's correct ${mf}, this was all a distraction to buy us enough time to raid the headquarters, of the most natorious feline crime syndicate in the city.`, 'cMeow, meow, meow', `bYou're wrong ${mf}, we will indeed find evidence we need to make a case against you because, you see, ${mf} there's a mole in your organization and we know exactly where to look.`, 'cMeow, meow, meow', `bHa no, this isn't a bluff, you're going away for a very, very, very long time ${mf}.`];
@@ -29,8 +35,10 @@ let joker = { iconK: '🃟', valueK: 10, nameK: 'Joker' };
 let storyMode = true;
 let dialogPosition = 0;
 let cardRemoval = false;
-let level = 1;
+let xp = 0;
+let level = 0;
 let min = 2;
+let mode = 10;
 
 let baseDeck;
 let deck;
@@ -47,22 +55,15 @@ let playerTurn = {
   cK: 0, // clubs
   lK: 0, // face cards
   tK: 0, // total
-  mK: 23, // max
-}
-
-function buildCards (iconSet, isFace) {
-  return iconSet.map((icon, i)=>{
-    let count = Math.floor(i/4);
-    let letter = suits[i%4];
-    let num = cardValues[count];
-    return {idK: letter+(isFace ? i+10 : num), iconK: icon, valueK: isFace ? 10 : cardValues[count], nameK: isFace ? faceNames[count] : undefined }
-  });
+  mK: 21, // max
 }
 
 let ga = (c) => document.querySelectorAll(c);
 let gn = (c) => document.querySelector(c);
 let ce = (c) => document.createElement(c);
 
+// Get DOM nodes
+////////////////
 let areas = ga('.zone-area');
 let controlsNode = gn('.controls');
 let controlNodes = controlsNode.querySelectorAll('div');
@@ -98,12 +99,14 @@ let gC = (c)=>{
   return c;
 }
 
+// Abilities dictionary (all game buttons)
+///////////////////////////////////////////
 let abilities = {
-  pass: (playerObj) => {
+  pass: () => {
       if (hasLost) return;
       print('wWe pass the turn');
-      let diff = playerObj.mK - playerObj.tK;
-      if (playerObj.mK < playerObj.tK) {
+      let diff = playerTurn.mK - playerTurn.tK;
+      if (playerTurn.mK < playerTurn.tK) {
           hasLost = true;
           finish(false); 
           return
@@ -114,39 +117,40 @@ let abilities = {
       }
       if(hand.length > 5){
         let extra = hand.length - 5;
-        playerTurn.cK +=extra*10;
-        playerTurn.dK +=extra*10;
-        playerTurn.hK +=extra*10;
-        playerTurn.sK +=extra*10;
-        print('bWe added extra to our stash for drawing over 5 cards!', true);
+        playerTurn.cK +=extra*3;
+        playerTurn.dK +=extra*3;
+        playerTurn.hK +=extra*3;
+        playerTurn.sK +=extra*3;
+        print('bWe added extra to our stash for drawing over 3 cards (extra x 3 of each stash)!', true);
       }
       playerTurn.hK -= diff;
       playerTurn.tK = 0;
+      xp+=0.2;
       print(`bWe lost ${diff} hearts`);
       if (diff > 5 && diff < 10) print('cMeow');
       if (diff > 10) print('cPurrr');
       if (diff < 5) print('cHisss');
       move(hand, discard, hand.length);
     },
-  add: (playerObj) => {
+  add: () => {
       if (isClickable('c0')) {
         playerTurn.cK -= 20;
-        playerObj.tK += 2;
+        playerTurn.tK += 2;
         print('wWe use the add 2 ability');
       }
     },
 
-  subtract: (playerObj) => {
+  subtract: () => {
       if (isClickable('c1')) {
         playerTurn.sK -= 20;
-        playerObj.tK -= 3;
+        playerTurn.tK -= 3;
         print('wWe use the subtract 3 ability');
-        if (playerObj.tK < 0) {
+        if (playerTurn.tK < 0) {
           print('cHe says: Very tricky');
         }
       }
   },
-  redraw: (playerObj) => {
+  redraw: () => {
       if (isClickable('c2')) {
         playerTurn.dK -= 20;
         move(hand.reverse(), discard, 1);
@@ -154,7 +158,10 @@ let abilities = {
         print('wWe redraw the last card');
       }
   },
-  remove: (playerObj) => {
+  remove: () => {
+    if (cardRemoval) {
+      print('bMr. Fluffy says we need to tap on a card.', true)
+    }
       print('bMr. Fluffy says you can click on a discarded card to remove it from your deck forever!', true)
 
       if (discard && discard.length === 0) {
@@ -169,13 +176,13 @@ let abilities = {
         cardRemoval = true;
       }
   },
-  addFaceCard:(playerObj) => {
+  addFaceCard:() => {
       if (isClickable('c4')) {
         playerTurn.sK -= 60;
         playerTurn.cK -= 60;
         playerTurn.dK -= 60;
         playerTurn.hK -= 60;
-        let newface = faces[getRandomIntInclusive(0, faces.length)];
+        let newface = faces[getRandomIntInclusive(0, faces.length - 1)];
         newface = gC(newface);
         let newId = newface.idK + baseDeck.length;
         discard.push({...newface, ...{idK: newId}});
@@ -186,9 +193,13 @@ let abilities = {
   }
 }
 
-// Add events //////////////////////////////////
+// Add events event listeners
+//////////////////////////////////
+
+// Toggle sound and skip intro
 document.addEventListener('keydown', (e) => {
   if (e.key == ' ') {
+    if (hasLost) location.reload();
     if (storyMode) {
       cl(storyArea);
       storyMode = false;
@@ -199,8 +210,19 @@ document.addEventListener('keydown', (e) => {
   if (e.key == 's') {
     soundOn = false;
   }
+  if (e.key == 'm') {
+    mode = 3;
+    print(`bWe've switched to medium difficulty`, true, true);
+
+  }
+  if (e.key == 'h') {
+    mode = 1;
+    print(`bWe've switched to hard difficulty`, true, true);
+
+  }
 });
 
+// Handle story progression in initial story mode
 storyArea.addEventListener('click', ()=> {
   if (hasLost && !loseDialog[dialogPosition] || hasWon && !winDialog[dialogPosition]) {
     location.reload();
@@ -243,17 +265,19 @@ function showGame () {
   })
 }
 
+// Gets data attribute and triggers appropriate function
 gameArea.addEventListener('click', (e)=> {
   if (!e.target.dataset.f) return;
-  abilities[e.target.dataset.f](playerTurn);
+  abilities[e.target.dataset.f]();
   checkWin();
   render();
 })
 
-// hit me
+// TODO: add to abilities
+// Trigger card draw by clicking on deck
 pDeckN.addEventListener('click', ()=>{
   if (playerTurn.tK > playerTurn.mK) {
-    print('bMr. Fluffly says that you went over 23. Either buy an ability or pass to lose the game (followed by meniacal cat laughter.)', true);
+    print(`bMr. Fluffly says that you went over ${playerTurn.mK}. Either buy an ability or pass to lose the game (followed by meniacal cat laughter.)`, true);
     return; 
   }
   drawFromDeck();
@@ -284,6 +308,8 @@ function drawFromDeck () {
     render();
 }
 
+// TODO: add to abilities
+// Allows for card removal when you have purchased the ability
 pDiscardN.addEventListener('click', (e)=>{
   if (!cardRemoval || !e.target.dataset.id) return;
   for (let i = 0; i < discard.length; i++) {
@@ -301,8 +327,8 @@ pDiscardN.addEventListener('click', (e)=>{
   cardRemoval = false;
 })
 
-// Main game loop and setup //////////////////////////////////
-
+// Main game loop and setup 
+//////////////////////////////////
 init()
 function init () {
   sound('ipuwx-t-----upli-lp-n-----binp-rm-----nlida-ki', 'sine', 0.3);
@@ -329,6 +355,7 @@ function render () {
       first: element.getBoundingClientRect()
     };
   });
+
   // render
   areas.forEach(n=>cl(n))
   deck.forEach(c=>aC(pDeckN, c))
@@ -364,8 +391,21 @@ function render () {
   });
 }
 
-// general function //////////////////////////////////
+// general functions 
+//////////////////////////////////
 
+// Build all of the cards data
+function buildCards (iconSet, isFace) {
+  return iconSet.map((icon, i)=>{
+    let count = Math.floor(i/4);
+    let letter = suits[i%4];
+    let num = cardValues[count];
+    return {idK: letter+(isFace ? i+10 : num), iconK: icon, valueK: isFace ? 10 : cardValues[count], nameK: isFace ? faceNames[count] : undefined }
+  });
+}
+
+
+// Add dom nodes to all cards
 function genPlayerDeck () {
   let cards = numCards.map((c, i)=>{
     gC(c);
@@ -374,12 +414,14 @@ function genPlayerDeck () {
   return cards;
 }
 
+// Basic card shuffle
 function shuffle (arr) {
   return arr.map(value => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value)
 }
 
+// Updates the dropdown that shows you all cards in your base deck
 function updateDeckSelect () {
   cl(selectNode);
   let option = ce("option");
@@ -393,6 +435,7 @@ function updateDeckSelect () {
   })
 }
 
+// Function for moving cards between zones
 function move (a, t, num=1) {
   // a = array
   // t = targetArray
@@ -403,8 +446,10 @@ function move (a, t, num=1) {
   cards.reverse().forEach((c)=>t.push(c))
 }
 
+// Shuffle text string. Used for randomizing speech sounds
 let shuffleString = str => str.split('').sort(function(){return 0.5-Math.random()}).join('');
 
+// Manages printing all dialog to the story areas
 function print (text, important, big) {
   let node = ce(big ? "h2" : "div");
   let pre = {
@@ -433,6 +478,7 @@ function print (text, important, big) {
   storyArea.scrollTo(0, storyArea.scrollHeight);
 }
 
+// Call in win or loss to initiate story sequences
 function finish (isWin) {
   if (isWin) {
     hasWon = true;
@@ -447,6 +493,7 @@ function finish (isWin) {
   print('rGoddamit we lost!', true);
 }
 
+// Checks if user won or won round and manages it appropriately
 function checkWin () {
   if (playerTurn.tK === playerTurn.mK) {
     const numFaces = countFaces();
@@ -454,25 +501,36 @@ function checkWin () {
       finish(true)
       return;
     }
-    print(`rWe got 23!`, true, true)
+    print(`rWe got ${playerTurn.mK}!`, true, true)
     print(`bHe says that for winning a round he's added an Ace to our deck and a Joker. Aces add 1 to our total but 11 to our stash. Jokers add 10 to our total and nothing to our stash. Also, he's added 60 to our entire stash!`);
-    let newJoker = {...joker, ...{idK: "j"+level}}
+    let newJoker = {...joker, ...{idK: "j"+xp}}
     newJoker = gC(newJoker);
     baseDeck.push(newJoker);
     let randAce = aces[getRandomIntInclusive(0, 3)];
-    let newAce = {...randAce, ...{idK: randAce.idK+(11+level)}};
+    let newAce = {...randAce, ...{idK: randAce.idK+(11+xp)}};
     newAce = gC(newAce);
     baseDeck.push(newAce);
-    level++;
     playerTurn.sK += 20;
     playerTurn.cK += 20;
     playerTurn.dK += 20;
     playerTurn.hK += 20;
     playerTurn.tK = 0;
+    xp++;
+    // Trigger mid way story modes
+    if (xp%mode === 0) {
+      if (level < 3) level++;
+      min++;
+      print(`bLooks like the minimum number of cards we have to draw to pass is now ${min}`, true, true)
+      storyMode = true;
+      showStory();
+      print(dialog['d'+level][dialogPosition])
+      dialogPosition++;
+    }
     init();
   }
 }
 
+// Count number of Aces, Jokers, and Face cards to determine if player has won game
 function countFaces () {
   let faceCards = [...faceNames, 'Joker', 'Ace']
   let numFaces = 0;
@@ -482,6 +540,7 @@ function countFaces () {
   return numFaces
 }
 
+// Just the basic random number generator
 function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);

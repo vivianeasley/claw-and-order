@@ -327,6 +327,7 @@
 
 .game-area {
   display: flex;
+  position: relative;
 }
 
 .zones {
@@ -401,8 +402,9 @@
   max-height: 167px;
 }
 
-/* @media screen and (max-height: 410px) {
-  .game-area.bottom {
-    margin-top: -35px;
-  }
+/* .required {
+  position: absolute;
+  top: 73px;
+  left: 102px;
+  z-index: 2;
 } */
