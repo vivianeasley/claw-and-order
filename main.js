@@ -14,7 +14,7 @@ let rDialog = [`You &%$#, you're just toying with us aren't you!`, `Is this a ga
 
 let dialog = {
   d0: [`rI'm detective Rivera.`,`b${mf} do you understand why you are being questioned today?`,`cMeow`,`bYou are currently being held on the suspicion of number of crimes including, but not limited to, murder 1.`,`cMeow, hiss`,`rWhat'd he say! Was that about me?!? Look, you little hairball you're on thin ice. We've got so much dirt on you we're going to put you away for life! We have witnesses…`,`bI'm sorry about my partner. They have a bit of a temper.`,`cMeow`, `bYes ${mf}`, `cMeow`, `bYes, uh huh`, `cMeow`, `bYes, I understand that but... there has to be some kind of understanding we can reach. We are prepared to offer you a good deal in exchange for information on the crime sydicate we know you are part of.`, `cMeow`, `bHe says he's thinking`, `cMeow, meow meow`, `bHe says he'd like to play a game. His game is blackjack but that might be boring for detectives as smart as us so he's spiced it up a bit.`,`bHe says if we win he game he'll answer any questions we have but if we lose he'll have nothing to say until his lawyer arrives.`,`rI'm not here to play games!!!!`,`bAgain I apologize for my partner... how can we say no to such an offer. Lets play your little game.`],
-  d1: [`cMeow, meow.`, `bHe says we're doing well enough that he'd like to raise the stakes. We are now required to 3 cards each round. In return, if we win hell lead us too a vast treasure he buried.`, `rTreasure you say...`, `bWhoa now Rivera. Lets not have annother It's a Mad Mad Mad Mad World debacle. We accept your terms ${mf}`],
+  d1: [`cMeow, meow.`, `bHe says we're doing well enough that he'd like to raise the stakes. We are now required to draw 3 cards each round. In return, if we win he'll lead us too a vast treasure he buried.`, `rTreasure you say...`, `bWhoa now Rivera. Lets not have annother It's a Mad Mad Mad Mad World debacle. We accept your terms ${mf}`],
   d2: [`rYou seem to be sweating ${mf}, how about you add another required card draw for... lets say the location of your secret lair.`, `cMeow.`, `bHe says cats don't sweat and he be more than happy to give us more information for making the game harder.`],
   d3: [`rAgain! more required cards to draw! We're taking you down ${mf} with your own game!`, `cMeow, hiss, hiss, rawr, hiss`, `rLets dance.`]
 };
@@ -38,7 +38,7 @@ let cardRemoval = false;
 let xp = 0;
 let level = 0;
 let min = 2;
-let mode = 10;
+let mode = 50;
 
 let baseDeck;
 let deck;
@@ -125,7 +125,7 @@ let abilities = {
       }
       playerTurn.hK -= diff;
       playerTurn.tK = 0;
-      xp+=0.2;
+      xp++;
       progressStory();
       print(`bWe lost ${diff} hearts`);
       if (diff > 5 && diff < 10) print('cMeow');
@@ -212,12 +212,12 @@ document.addEventListener('keydown', (e) => {
     soundOn = false;
   }
   if (e.key == 'm') {
-    mode = 3;
+    mode = 15;
     print(`bWe've switched to medium difficulty`, true, true);
 
   }
   if (e.key == 'h') {
-    mode = 1;
+    mode = 5;
     print(`bWe've switched to hard difficulty`, true, true);
 
   }
@@ -516,7 +516,7 @@ function checkWin () {
     playerTurn.dK += 20;
     playerTurn.hK += 20;
     playerTurn.tK = 0;
-    xp++;
+    xp+=5;
     // Trigger mid way story modes
     progressStory();
     init();
