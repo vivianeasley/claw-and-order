@@ -38,7 +38,7 @@ let cardRemoval = false;
 let xp = 0;
 let level = 0;
 let min = 2;
-let mode = 50;
+let mode = 20;
 
 let baseDeck;
 let deck;
@@ -188,7 +188,7 @@ let abilities = {
         let newId = newface.idK + baseDeck.length;
         discard.push({...newface, ...{idK: newId}});
         baseDeck.push({...newface, ...{idK: newId}});
-        playerTurn.mK += 7;
+        playerTurn.mK += 3;
         print(`bFor each face card added to your deck he'll raise the max by 7. If you win a round with 20 or more Ace, Joker, or face cards you win the game and he'll tell us everything we want to know.`, true)
       }
   }
@@ -212,12 +212,12 @@ document.addEventListener('keydown', (e) => {
     soundOn = false;
   }
   if (e.key == 'm') {
-    mode = 15;
+    mode = 8;
     print(`bWe've switched to medium difficulty`, true, true);
 
   }
   if (e.key == 'h') {
-    mode = 5;
+    mode = 4;
     print(`bWe've switched to hard difficulty`, true, true);
 
   }
@@ -516,7 +516,7 @@ function checkWin () {
     playerTurn.dK += 20;
     playerTurn.hK += 20;
     playerTurn.tK = 0;
-    xp+=5;
+    xp+=4;
     // Trigger mid way story modes
     progressStory();
     init();
