@@ -38,7 +38,7 @@ let cardRemoval = false;
 let xp = 0;
 let level = 0;
 let min = 2;
-let mode = 20;
+let mode = 16;
 
 let baseDeck;
 let deck;
@@ -64,6 +64,7 @@ let ce = (c) => document.createElement(c);
 
 // Get DOM nodes
 ////////////////
+let gameEvents = gn('.main');
 let areas = ga('.zone-area');
 let controlsNode = gn('.controls');
 let controlNodes = controlsNode.querySelectorAll('div');
@@ -74,7 +75,6 @@ let pHandN = areas[1];
 let pDiscardN = areas[2];
 let statsNode = ga('span');
 let selectNode = gn('.select');
-let gameArea = gn('.top');
 
 let isClickable = (val) => {
   return {c0: playerTurn.cK > 19,
@@ -96,15 +96,16 @@ let gC = (c)=>{
   c.nodeK.classList.add('c');
   c.nodeK.textContent = c.iconK;
   c.nodeK.dataset.id = c.idK;
+  c.nodeK.dataset.f = 'select';
   return c;
 }
 
-// Abilities dictionary (all game buttons)
+// Abilities dictionary (all game buttons and clickable areas)
 ///////////////////////////////////////////
 let abilities = {
   pass: () => {
-      if (hasLost) return;
-      print('wWe pass the turn');
+      if (hasLost || (hand.length === 0 && discard.length === 0)) return;
+      print('wWe pass the turn', false, false, true);
       let diff = playerTurn.mK - playerTurn.tK;
       if (playerTurn.mK < playerTurn.tK) {
           hasLost = true;
@@ -124,6 +125,10 @@ let abilities = {
         print('bWe added extra to our stash for drawing over 3 cards (extra x 3 of each stash)!', true);
       }
       playerTurn.hK -= diff;
+      if (playerTurn.hK < 1) {
+        finish(false);
+        return;
+      }
       playerTurn.tK = 0;
       xp++;
       progressStory();
@@ -137,7 +142,7 @@ let abilities = {
       if (isClickable('c0')) {
         playerTurn.cK -= 20;
         playerTurn.tK += 2;
-        print('wWe use the add 2 ability');
+        print("wWe use the 'add 2' ability", false, false, true);
       }
     },
 
@@ -145,10 +150,7 @@ let abilities = {
       if (isClickable('c1')) {
         playerTurn.sK -= 20;
         playerTurn.tK -= 3;
-        print('wWe use the subtract 3 ability');
-        if (playerTurn.tK < 0) {
-          print('cHe says: Very tricky');
-        }
+        print("wWe use the 'subtract 3' ability", false, false, true);
       }
   },
   redraw: () => {
@@ -156,7 +158,7 @@ let abilities = {
         playerTurn.dK -= 20;
         move(hand.reverse(), discard, 1);
         drawFromDeck();
-        print('wWe redraw the last card');
+        print('wWe redraw the last card', false, false, true);
       }
   },
   remove: () => {
@@ -189,17 +191,11 @@ let abilities = {
         discard.push({...newface, ...{idK: newId}});
         baseDeck.push({...newface, ...{idK: newId}});
         playerTurn.mK += 3;
-        print(`bFor each face card added to your deck he'll raise the max by 7. If you win a round with 20 or more Ace, Joker, or face cards you win the game and he'll tell us everything we want to know.`, true)
+        print(`bFor each face card added to your deck he'll raise the max by 3. If you win a round with 20 or more Ace, Joker, or face cards you win the game and he'll tell us everything we want to know.`, true)
       }
-  }
-}
-
-// Add events event listeners
-//////////////////////////////////
-
-// Toggle sound and skip intro
-document.addEventListener('keydown', (e) => {
-  if (e.key == ' ') {
+  },
+  skip: () =>{
+    if (!storyMode) return;
     if (hasLost) location.reload();
     if (storyMode) {
       cl(storyArea);
@@ -207,83 +203,92 @@ document.addEventListener('keydown', (e) => {
       dialogPosition = 0;
       showGame();
     }
+  },
+  difficulty: () =>{
+    if (level > 0) return;
+    if (mode === 16) {
+      mode = 8;
+      print(`bWe've switched to medium difficulty`, true, true);
+    } else if (mode === 8) {
+      mode = 4;
+      print(`bWe've switched to hard difficulty`, true, true);
+    } else {
+      mode = 16
+      print(`bWe've switched to easy difficulty`, true, true);
+    }
+  },
+  sound: () => {
+    soundOn = !soundOn
+    print(`bSound toggled`, true, true);
+  },
+  story: () => {
+    if (hasLost && !loseDialog[dialogPosition] || hasWon && !winDialog[dialogPosition]) {
+      location.reload();
+    }
+    let speech
+    if (hasWon) {
+      speech = winDialog[dialogPosition];
+    } else if (hasLost) {
+      speech = loseDialog[dialogPosition];
+    } else {
+      speech = dialog['d'+level][dialogPosition];
+    }
+    
+    if (storyMode && speech) {
+      print(speech)
+      dialogPosition++;
+    } else {
+      cl(storyArea)
+      storyMode = false;
+      dialogPosition = 0;
+      showGame();
+    }
+  },
+  draw: () => {
+    if (playerTurn.tK > playerTurn.mK) {
+      print(`bMr. Fluffly says that you went over ${playerTurn.mK}. Either buy an ability or pass to lose the game (followed by meniacal cat laughter.)`, true);
+      return; 
+    }
+    drawFromDeck();
+  }, 
+  select: (e) => {
+    if (!cardRemoval || !e.target.dataset.id) return;
+    for (let i = 0; i < discard.length; i++) {
+      if (e.target.dataset.id === discard[i].idK) {
+        discard.splice(i, 1);
+        render();
+      }
+    }
+    for (let i = 0; i < baseDeck.length; i++) {
+      if (e.target.dataset.id === baseDeck[i].idK) {
+        baseDeck.splice(i, 1);
+        render();
+      }
+    }
+    cardRemoval = false;
   }
-  if (e.key == 's') {
-    soundOn = false;
-  }
-  if (e.key == 'm') {
-    mode = 8;
-    print(`bWe've switched to medium difficulty`, true, true);
+}
 
-  }
-  if (e.key == 'h') {
-    mode = 4;
-    print(`bWe've switched to hard difficulty`, true, true);
-
-  }
-});
-
-// Handle story progression in initial story mode
-storyArea.addEventListener('click', ()=> {
-  if (hasLost && !loseDialog[dialogPosition] || hasWon && !winDialog[dialogPosition]) {
-    location.reload();
-  }
-  let speech
-  if (hasWon) {
-    speech = winDialog[dialogPosition];
-  } else if (hasLost) {
-    speech = loseDialog[dialogPosition];
-  } else {
-    speech = dialog['d'+level][dialogPosition];
-  }
-  
-  if (storyMode && speech) {
-    print(speech)
-    dialogPosition++;
-  } else {
-    cl(storyArea)
-    storyMode = false;
-    dialogPosition = 0;
-    showGame();
-  }
-})
-
+// Ability functions
 function showStory () {
   const arr2 = ga('.story');
   arr2.forEach((el)=> {
     el.classList.remove('hide')
   })
-  const arr1 = gn('.game');
-  arr1.classList.add('hide')
+  const gameNode = gn('.game');
+  gameNode.style.zIndex = 0;
+  gameNode.classList.add('hide')
 }
 
 function showGame () {
-  const arr1 = gn('.game');
-  arr1.classList.remove('hide')
+  const gameNode = gn('.game');
+  gameNode.style.zIndex = 100;
+  gameNode.classList.remove('hide')
   const arr2 = ga('.story');
   arr2.forEach((el)=> {
     el.classList.add('hide')
   })
 }
-
-// Gets data attribute and triggers appropriate function
-gameArea.addEventListener('click', (e)=> {
-  if (!e.target.dataset.f) return;
-  abilities[e.target.dataset.f]();
-  checkWin();
-  render();
-})
-
-// TODO: add to abilities
-// Trigger card draw by clicking on deck
-pDeckN.addEventListener('click', ()=>{
-  if (playerTurn.tK > playerTurn.mK) {
-    print(`bMr. Fluffly says that you went over ${playerTurn.mK}. Either buy an ability or pass to lose the game (followed by meniacal cat laughter.)`, true);
-    return; 
-  }
-  drawFromDeck();
-
-})
 
 function drawFromDeck () {
     // if you deck is 0 shuffle your library
@@ -295,6 +300,14 @@ function drawFromDeck () {
   
     // draw cards
     move(deck, hand, 1);
+
+    // If joker lose half hearts
+    let lastCard = hand[hand.length - 1]?.idK;
+    console.log(lastCard, lastCard[0] === 'j')
+    if (lastCard && lastCard[0] === 'j') {
+      print(`bMr. Fluffly says we drew a joker so we lose half our hearts.`, true, true);
+      playerTurn.hK = Math.ceil(playerTurn.hK/2);
+    }
   
     // add to abilities
     let currentCard = hand[hand.length - 1];
@@ -309,30 +322,22 @@ function drawFromDeck () {
     render();
 }
 
-// TODO: add to abilities
-// Allows for card removal when you have purchased the ability
-pDiscardN.addEventListener('click', (e)=>{
-  if (!cardRemoval || !e.target.dataset.id) return;
-  for (let i = 0; i < discard.length; i++) {
-    if (e.target.dataset.id === discard[i].idK) {
-      discard.splice(i, 1);
-      render();
-    }
-  }
-  for (let i = 0; i < baseDeck.length; i++) {
-    if (e.target.dataset.id === baseDeck[i].idK) {
-      baseDeck.splice(i, 1);
-      render();
-    }
-  }
-  cardRemoval = false;
+// Add events event listeners
+//////////////////////////////////
+
+// Gets data attribute and trigger appropriate ability function
+gameEvents.addEventListener('click', (e)=> {
+  if (!e.target.dataset.f) return;
+  abilities[e.target.dataset.f](e);
+  if (!storyMode)checkWin();
+  render();
 })
 
 // Main game loop and setup 
 //////////////////////////////////
 init()
 function init () {
-  sound('ipuwx-t-----upli-lp-n-----binp-rm-----nlida-ki', 'sine', 0.3);
+  sound('ahgdcaa--ahgdckk---ojkghhc--mgjch', 'sine', 0.3);
   if (!baseDeck) baseDeck = genPlayerDeck();
   playerTurn.tK = 0;
   deck = shuffle([...baseDeck]);
@@ -451,7 +456,7 @@ function move (a, t, num=1) {
 let shuffleString = str => str.split('').sort(function(){return 0.5-Math.random()}).join('');
 
 // Manages printing all dialog to the story areas
-function print (text, important, big) {
+function print (text, important, big, skipSound) {
   let node = ce(big ? "h2" : "div");
   let pre = {
     w: 'Detectives: ',
@@ -461,14 +466,17 @@ function print (text, important, big) {
   }
 
   const character = text.substring(0, 1);
-  if (storyMode || important) {
-    if (character === 'c') sound(shuffleString('hgklrsm'), 0.1);
-    if (character === 'r') sound(shuffleString('acXUeTVbf'), 0.1);
-    if (character === 'b') sound(shuffleString('ZYXUTV'), 0.1);
-    if (character === 'w') sound(shuffleString('VVUXcZaXUTfYe'), 0.1);
+  if (!skipSound) {
+    if (storyMode || important) {
+      if (character === 'c') sound(shuffleString('hgklrsm'), 0.1);
+      if (character === 'r') sound(shuffleString('acXUeTVbf'), 0.1);
+      if (character === 'b') sound(shuffleString('ZYXUTV'), 0.1);
+      if (character === 'w') sound(shuffleString('VVUXcZaXUTfYe'), 0.1);
+    }
   }
   const speech = text.substring(1);
   node.textContent = pre[character] + speech;
+
   if (important)node.style.color = 'red';
   if (storyMode) {
     storyArea.appendChild(node);
@@ -485,13 +493,13 @@ function finish (isWin) {
     hasWon = true;
     storyMode = true;
     showStory('dagdsa');
-    print('bWe did it we won!', true);
+    print('bWe did it, we won!', true);
     return;
   }
   hasLost = true;
   storyMode = true;
   showStory();
-  print('rGoddamit we lost!', true);
+  print('rGoddamit, we lost!', true);
 }
 
 // Checks if user won or won round and manages it appropriately
@@ -502,8 +510,8 @@ function checkWin () {
       finish(true)
       return;
     }
-    print(`rWe got ${playerTurn.mK}!`, true, true)
-    print(`bHe says that for winning a round he's added an Ace to our deck and a Joker. Aces add 1 to our total but 11 to our stash. Jokers add 10 to our total and nothing to our stash. Also, he's added 60 to our entire stash!`);
+    print(`rWe got ${playerTurn.mK}!`, true, true, true)
+    print(`bHe says that for winning a round he's added an Ace to our deck and a Joker. Aces add 1 to our total but 11 to our stash. Jokers add 10 to our total and nothing to our stash and we lose half out hearts. Also, he's added 20 to our entire stash!`, false, false, true);
     let newJoker = {...joker, ...{idK: "j"+xp}}
     newJoker = gC(newJoker);
     baseDeck.push(newJoker);

@@ -3,51 +3,6 @@
   margin: 0;
 }
 
-/* #app {
-  overflow: hidden;
-  position: relative;
-  display: none
-}
-
-.p {
-  min-height: 330px;
-  transform: translateY(-500px);
-  transition: transform 1s ease-in 1s;
-  margin-top:10px; 
-}
-
-.p.hi {
-  transform: translateY(0);
-}
-
-.ta {
-  background-image: url('/dithered-gradient.jpg');
-  background-position: 0%;
-  background-repeat: repeat-x;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 300px;
-  transition: all 1s ease-out
-}
-
-.ta.hi {
-  transform: scaleY(2.5);
-}
-
-.f {
-  position: absolute;
-  left: 0;
-  right: 0;
-  text-align: center;
-  transition: transform 1s ease-out
-}
-
-.f.hi {
-  transform: translateY(-200px)
-} */
-
 .c {
   font-size: 100px;
   width: 66px;
@@ -61,77 +16,6 @@
   margin: 2px;
   cursor: pointer;
   overflow: hidden;
-}
-
-.a {
-  min-height: 60px;
-  margin: 0 0 10px 0;
-  position: relative;
-  border: 5px ridge grey;
-  min-height: 98px;
-  background: #fff;
-}
-
-.h {
-  height: 98px;
-}
-
-.d .c {
-  background: #000;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.d .c::after {
-  background:#fff;
-  content: '🂠';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  color: #000 !important
-}
-
-.t .c:not(:last-child) {
-  width: 20px;
-  margin: 0;
-}
-
-.sun {
-  font-size: 75px;
-}
-
-.cw {
-  position: relative;
-  pointer-events: none;
-}
-
-.cl,
-.cr {
-  position: absolute;
-  bottom: 0;
-  width: 325px;
-  transition: transform 1s ease-out
-}
-
-.cl {
-  left: 0;
-}
-
-.cr {
-  right: 0;
-}
-
-.cr.hi {
-  transform: translateX(300px);
-}
-
-.cl.hi {
-  transform: translateX(-300px);
 }
 
 .controls div {
@@ -151,64 +35,6 @@
   font-weight: bold;
 }
 
-.container {
-  display: flex;
-}
-
-.container.below {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 200px;
-  opacity: 1;
-  transition: transform 1s ease-out;
-}
-
-.container.below.hi {
-  transform: translateY(-600px);
-}
-
-.boxes {
-  border: 5px ridge grey;
-  background: #fff;
-}
-
-.item-left,
-.item-right,
-.item-center,
-.item-bottom-left  {
-  position: relative;
-  z-index: 2;
-  padding: 1px;
-  min-height: 98px;
-  max-height: 196px;
-  margin: 0 2px 4px;
-}
-
-.item-left {
-  width: 86px;
-  height: 98px;
-}
-
-.item-bottom-left {
-  width: 120px;
-  padding: 6px;
-}
-
-.item-right {
-  width: 275px;
-}
-
-.item-center { 
-  flex-grow: 1;
-  overflow-x: auto;
-}
-
-.te { 
-  padding: 6px;
-}
-
 .start-hide {
   display: none;
 }
@@ -217,8 +43,6 @@
   transition: all 200ms ease-in-out;
 }
 
-
-/* new setup */
 .center {
   text-align: center;
 }
@@ -259,8 +83,7 @@
 
 .cat {
   position: relative;
-  z-index: 10;
-  
+  z-index: 22;
 }
 
 .cat.hide {
@@ -299,7 +122,7 @@
   right: 0;
   bottom: 0;
   z-index: 20;
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 .box {
@@ -321,6 +144,11 @@
 
 .story-area.hide {
   transform: translateY(-550px);
+}
+
+.story-area > *,
+.deck > * {
+  pointer-events: none;
 }
 
 .game-area-wrapper {
@@ -355,6 +183,7 @@
 .deck {
   width: 86px;
   height: 98px;
+  cursor: pointer;
 }
 
 .deck .c {
@@ -422,10 +251,3 @@
 h3 {
   background: white;
 }
-
-/* .required {
-  position: absolute;
-  top: 73px;
-  left: 102px;
-  z-index: 2;
-} */
