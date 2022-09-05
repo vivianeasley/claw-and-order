@@ -48,6 +48,8 @@ let hasLost = false;
 let hasWon = false;
 let soundOn = true;
 
+// Originally thought I wouldn't have the space for full names.
+// I did and in retrospect should have names these better.
 let playerTurn = {
   sK: 0, // spades
   hK: 15, // hearts
