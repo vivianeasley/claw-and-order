@@ -4,23 +4,24 @@ import './style.css'
 ////////////////
 let cardValues = [2, 3, 5, 10];
 let faceNames = ['Jack', 'Knight', 'Queen', 'King'];
-let cardIcons = ['🂢','🂲','🃂','🃒','🂣','🂳','🃃','🃓','🂥','🂵','🃅','🃕','🂪','🂺','🃊','🃚'];
+let cardIcons = ['🂢','🂲','🃂','🃒','🂣','🂳', '🃃','🃓','🂥','🂵','🃅','🃕','🂪','🂺','🃊','🃚'];
 let faceIcons = ['🂫', '🂻', '🃋', '🃛', '🂬', '🂼', '🃌', '🃜', '🂭', '🂽', '🃍', '🃝', '🂮', '🂾', '🃎', '🃞'];
 let aceIcons = ['🂡', '🂱', '🃁', '🃑'];
 
 let mf = 'Mr. Fluffy Pants';
 
-let rDialog = [`You &%$#, you're just toying with us aren't you!`, `Is this a game to you!!! There's a backyard full of dead birds and it's got ${mf} written all over it!`, `Well that orphanage certainly didn't burn itself down.`,`Don't play coy with me. I invented coy! I've got a goddamn patent on being coy!`,`You think you're tough! I eat pancakes shaped like your face for breakfast!`, `You think you're tough! I'll pett you 1 too many times!`, `You want to dance tough guy? I'll feed you 5 minutes after your normal dinner time!`, `I don't play by your rules`, `I get results`, `I'm getting too old for this &*^%`, `I'm a dog person`, `Would you like some fishy-lump treats? Well, tough! We're all out!`];
+let rDialog = [`You &%$#, you're just toying with us aren't you!`, `Is this a game to you??? There's a backyard full of dead birds and it's got ${mf} written all over it!`, `Well that orphanage certainly didn't burn itself down.`,`Don't play coy with me. I invented coy! I've got a goddamn patent on being coy!`,`You think you're tough! I eat pancakes shaped like your face for breakfast!`, `You think you're tough! I'll pet you one too many times!`, `You want to dance tough guy? I'll feed you five minutes after your normal dinner time!`, `I don't play by your rules.`, `I get results.`, `I'm getting too old for this &*^%.`, `I'm a dog person.`, `Would you like some fishy-lump treats? Well, tough! We're all out!`];
 
 let dialog = {
-  d0: [`rI'm detective Rivera.`,`b${mf} do you understand why you are being questioned today?`,`cMeow`,`bYou are currently being held on the suspicion of number of crimes including, but not limited to, murder 1.`,`cMeow, hiss`,`rWhat'd he say! Was that about me?!? Look, you little hairball you're on thin ice. We've got so much dirt on you we're going to put you away for life! We have witnesses…`,`bI'm sorry about my partner. They have a bit of a temper.`,`cMeow`, `bYes ${mf}`, `cMeow`, `bYes, uh huh`, `cMeow`, `bYes, I understand that but... there has to be some kind of understanding we can reach. We are prepared to offer you a good deal in exchange for information on the crime sydicate we know you are part of.`, `cMeow`, `bHe says he's thinking`, `cMeow, meow meow`, `bHe says he'd like to play a game. His game is blackjack but that might be boring for detectives as smart as us so he's spiced it up a bit.`,`bHe says if we win he game he'll answer any questions we have but if we lose he'll have nothing to say until his lawyer arrives.`,`rI'm not here to play games!!!!`,`bAgain I apologize for my partner... how can we say no to such an offer. Lets play your little game.`],
-  d1: [`cMeow, meow.`, `bHe says we're doing well enough that he'd like to raise the stakes. We are now required to draw 3 cards each round. In return, if we win he'll lead us too a vast treasure he buried.`, `rTreasure you say...`, `bWhoa now Rivera. Lets not have annother It's a Mad Mad Mad Mad World debacle. We accept your terms ${mf}`],
-  d2: [`rYou seem to be sweating ${mf}, how about you add another required card draw for... lets say the location of your secret lair.`, `cMeow.`, `bHe says cats don't sweat and he be more than happy to give us more information for making the game harder.`],
-  d3: [`rAgain! more required cards to draw! We're taking you down ${mf} with your own game!`, `cMeow, hiss, hiss, rawr, hiss`, `rLets dance.`]
+ d0: [`rI'm detective Rivera.`,`b${mf} do you understand why you are being questioned today?`,`cMeow`,`bYou are currently being held on the suspicion of number of crimes including, but not limited to, murder 1.`,`cMeow, hiss`,`rWhat'd he say! Was that about me?!? Look, you little hairball you're on thin ice. We've got so much dirt on you we're going to put you away for life! We have witnesses…`,`bI'm sorry about my partner. They have a bit of a temper.`,`cMeow`, `bYes ${mf}`, `cMeow`, `bYes, uh huh`, `cMeow`, `bYes, I understand that but... there has to be some kind of understanding we can reach. We're prepared to offer you a good deal in exchange for information on the crime syndicate we know you're part of.`, `cMeow`, `bHe says he's thinking.`, `cMeow, meow meow`, `bHe says he'd like to play a game. His game is blackjack but that might be boring for detectives as smart as us so he's spiced it up a bit.`,`bHe says if we win the game he'll answer any questions we have, but if we lose he'll have nothing to say until his lawyer arrives.`,`rI'm not here to play games!!!!`,`bAgain, I apologize for my partner... how can we say no to such an offer. Let's play your little game.`],
+ d1: [`cMeow, meow.`, `bHe says we're doing well enough that he'd like to raise the stakes. We're now required to draw three cards each round. In return, if we win he'll lead us to a vast treasure he buried.`, `rTreasure you say...`, `bWhoa now Rivera. Let's not have another “It's a Mad Mad Mad Mad World” debacle. We accept your terms ${mf}.`],
+ d2: [`rYou seem to be sweating ${mf}, how about you add another required card draw for... let's say the location of your secret lair.`, `cMeow.`, `bHe says cats don't sweat and he'd be more than happy to give us more information if we make the game harder.`],
+ d3: [`rAgain! more required cards to draw! We're taking you down ${mf} with your own game!`, `cMeow, hiss, hiss, rawr, hiss`, `rLet's dance.`]
 };
 
-let winDialog = ['rTake that!', "cMeow", 'bHe says well played but he still has nothing to say to us, just thanks for helping him pass the time', `rNo thank you ${mf}. That's probably been long enough wouldn't you say detective Bennet?`, 'bYes, we probably have everything we need by now', 'cMeow?', `bThat's correct ${mf}, this was all a distraction to buy us enough time to raid the headquarters, of the most natorious feline crime syndicate in the city.`, 'cMeow, meow, meow', `bYou're wrong ${mf}, we will indeed find evidence we need to make a case against you because, you see, ${mf} there's a mole in your organization and we know exactly where to look.`, 'cMeow, meow, meow', `bHa no, this isn't a bluff, you're going away for a very, very, very long time ${mf}.`];
-let loseDialog = ['cMeow, meow, meow', `bHe says it looks like our luck has run out, his little cat whiskers are sealed until his lawyer arrives. Better luck next time detectives (click to play again)`];
+let winDialog = ['rTake that!', "cMeow", 'bHe says well played but he still has nothing to say to us - just thanks for helping him pass the time.', `rNo, thank you ${mf}. That's probably been long enough wouldn't you say Detective Bennet?`, 'bYes, we probably have everything we need by now.', 'cMeow?', `bThat's correct ${mf}. This was all a distraction to buy us time to raid the headquarters of the most notorious feline crime syndicate in the city.`, 'cMeow, meow, meow', `bYou're wrong ${mf}. We will indeed find evidence we need to make a case against you because, you see, ${mf} there's a mole in your organization and we know exactly where to look.`, 'cMeow, meow, meow', `bHa no, this isn't a bluff. You're going away for a very, very, very long time ${mf}.`];
+let loseDialog = ['cMeow, meow, meow', `bHe says it looks like our luck has run out. His little cat whiskers are sealed until his lawyer arrives. Better luck next time detectives. (Click to play again.)`];
+
 
 let symbols = {'s':'♠', 'h':'♥', 'd':'♦', 'c':'♣'}
 let letters = ['s', 'h', 'd', 'c', 'l', 't', 'm'];
@@ -46,7 +47,7 @@ let discard;
 let hand;
 let hasLost = false;
 let hasWon = false;
-let soundOn = true;
+let soundOn = false;
 
 // Originally thought I wouldn't have the space for full names.
 // I did and in retrospect should have names these better.
@@ -107,7 +108,7 @@ let gC = (c)=>{
 let abilities = {
   pass: () => {
       if (hasLost || (hand.length === 0 && discard.length === 0)) return;
-      print('wWe pass the turn', false, false, true);
+      print('wWe pass the turn.', false, false, true);
       let diff = playerTurn.mK - playerTurn.tK;
       if (playerTurn.mK < playerTurn.tK) {
           hasLost = true;
@@ -165,9 +166,9 @@ let abilities = {
   },
   remove: () => {
     if (cardRemoval) {
-      print('bMr. Fluffy says we need to tap on a card.', true)
+      print('bMr. Fluffy Pants says we need to tap on a card.', true)
     }
-      print('bMr. Fluffy says you can click on a discarded card to remove it from your deck forever!', true)
+      print('bMr. Fluffy Pants says you can click on a discarded card to remove it from your deck forever!', true)
 
       if (discard && discard.length === 0) {
         print('bHe says you need to have at least 1 card in your discard!', true)
@@ -248,9 +249,10 @@ let abilities = {
   },
   draw: () => {
     if (playerTurn.tK > playerTurn.mK) {
-      print(`bMr. Fluffly says that you went over ${playerTurn.mK}. Either buy an ability or pass to lose the game (followed by meniacal cat laughter.)`, true);
+      print(`bMr. Fluffy Pants says that you went over ${playerTurn.mK}. Either buy an ability or pass to lose the game (followed by maniacal cat laughter.)`, true);
       return; 
     }
+    if (deck.length === 0 && discard.length === 0) return;
     drawFromDeck();
   }, 
   select: (e) => {
@@ -305,9 +307,8 @@ function drawFromDeck () {
 
     // If joker lose half hearts
     let lastCard = hand[hand.length - 1]?.idK;
-    console.log(lastCard, lastCard[0] === 'j')
     if (lastCard && lastCard[0] === 'j') {
-      print(`bMr. Fluffly says we drew a joker so we lose half our hearts.`, true, true);
+      print(`bMr. Fluffy Pants says we drew a joker so we lose half our hearts.`, true, true);
       playerTurn.hK = Math.ceil(playerTurn.hK/2);
     }
   
@@ -334,6 +335,13 @@ gameEvents.addEventListener('click', (e)=> {
   if (!storyMode)checkWin();
   render();
 })
+
+// Key controls
+document.addEventListener('keydown', (e) => {
+  if (e.key == ' ') {abilities.skip();return;}
+  if (e.key == 's') {soundOn = !soundOn;return;}
+  if (e.key == 'd') {abilities.difficulty();return;}
+});
 
 // Main game loop and setup 
 //////////////////////////////////
@@ -513,7 +521,7 @@ function checkWin () {
       return;
     }
     print(`rWe got ${playerTurn.mK}!`, true, true, true)
-    print(`bHe says that for winning a round he's added an Ace to our deck and a Joker. Aces add 1 to our total but 11 to our stash. Jokers add 10 to our total and nothing to our stash and we lose half out hearts. Also, he's added 20 to our entire stash!`, false, false, true);
+    print(`bHe says that for winning a round he's added an Ace and a Joker to our deck. Aces add 1 to our total but 11 to our stash. Jokers add 10 to our total and nothing to our stash and we lose half our hearts. Also, he's added 20 to our entire stash!`, false, false, true);
     let newJoker = {...joker, ...{idK: "j"+xp}}
     newJoker = gC(newJoker);
     baseDeck.push(newJoker);
@@ -533,11 +541,12 @@ function checkWin () {
   }
 }
 
+// Moves story dialog forward
 function progressStory () {
   if (xp%mode === 0) {
     if (level < 3) level++;
     min++;
-    print(`bLooks like the minimum number of cards we have to draw to pass is now ${min}`, true, true)
+    print(`bLooks like the minimum number of cards we have to draw to pass is now ${min}.`, true, true)
     storyMode = true;
     showStory();
     print(dialog['d'+level][dialogPosition])
@@ -562,10 +571,10 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
-// Slightly aumented version of XEMs nifty little music player
-//type: sine triangle square or sawtooth 
+// Slightly augmented version of XEMs nifty little music player https://xem.github.io/alphabet-piano/
+//type: sine triangle square or sawtooth -> "-" pause "a-zA-Z" sounds "1-5" previous note length
 function sound (stringNotes, type, musicLength) { 
-  if(!soundOn)return;
+  if(soundOn === false)return;
   let noteLength;
   let noteLengths = {
     '5': 0.4, // full
@@ -578,7 +587,6 @@ function sound (stringNotes, type, musicLength) {
   skipList.push('-')
   window.AudioContext = window.AudioContext||window.webkitAudioContext;
   let ctx = new AudioContext();
-  if (!ctx) return;
   let gainNode=ctx.createGain();
   for(let i=0;i<stringNotes.length;i++) {
     noteLength = !isNaN(stringNotes[i+1]) ? noteLengths[stringNotes[i+1]] : musicLength ? musicLength : 0.1;

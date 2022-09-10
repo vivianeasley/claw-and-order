@@ -16,6 +16,7 @@
   margin: 2px;
   cursor: pointer;
   overflow: hidden;
+  vertical-align: middle;
 }
 
 .controls div {
